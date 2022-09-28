@@ -12,7 +12,8 @@ export function Home() {
     const newTask:Task = {
       id: new Date().getTime(),
       title: newTaskTitle,
-      done: false
+      done: false,
+      isEditing: false
     }
 
     setTasks(oldTasks => [...oldTasks, newTask])
@@ -34,6 +35,32 @@ export function Home() {
     setTasks(oldTasks => oldTasks.filter(task => task.id !== id))
   }
 
+  function handleEditTask(id: number) {
+    const taskIndex = tasks.findIndex(task => task.id === id)
+
+    if (taskIndex || taskIndex === 0) {
+      const updatedTasks = tasks.map(task => ({...task}))
+
+      updatedTasks[taskIndex].isEditing = !updatedTasks[taskIndex].isEditing
+
+      setTasks(updatedTasks)
+    }
+  }
+
+  function handleUpdateTask(newTitle: string, id: number) {
+    const taskIndex = tasks.findIndex(task => task.id === id)
+
+    if (taskIndex || taskIndex === 0) {
+      const updatedTasks = tasks.map(task => ({...task}))
+
+      updatedTasks[taskIndex].title = newTitle
+
+      updatedTasks[taskIndex].isEditing = false
+
+      setTasks(updatedTasks)
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Header tasksCounter={tasks.length} />
@@ -44,6 +71,8 @@ export function Home() {
         tasks={tasks} 
         toggleTaskDone={handleToggleTaskDone}
         removeTask={handleRemoveTask} 
+        editTask={handleEditTask}
+        updateTask={handleUpdateTask}
       />
     </View>
   )
