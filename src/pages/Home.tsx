@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
 import { Task, TasksList } from '../components/TasksList';
@@ -8,15 +8,30 @@ import { TodoInput } from '../components/TodoInput';
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  function handleAddTask(newTaskTitle: string) {
-    const newTask:Task = {
-      id: new Date().getTime(),
-      title: newTaskTitle,
-      done: false,
-      isEditing: false
-    }
+  const createTwoButtonAlert = () =>
+    Alert.alert(
+      "Task já cadastrada",
+      "Você não pode adicionar uma task com o mesmo título",
+      [
+        { text: "OK" }
+      ]
+    );
 
-    setTasks(oldTasks => [...oldTasks, newTask])
+  function handleAddTask(newTaskTitle: string) {
+    const titleAlreadyExists = tasks.find(task => task.title === newTaskTitle);
+
+    if (titleAlreadyExists) {
+      createTwoButtonAlert()
+    } else {
+      const newTask:Task = {
+        id: new Date().getTime(),
+        title: newTaskTitle,
+        done: false,
+        isEditing: false
+      }
+  
+      setTasks(oldTasks => [...oldTasks, newTask])
+    }
   }
 
   function handleToggleTaskDone(id: number) {

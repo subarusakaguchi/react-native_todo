@@ -76,7 +76,7 @@ export function TasksList({
                 style={{ paddingRight: 24 }}
                 onPress={() => editTask(item.id)}
               >
-                <Icon name='edit' size={24} color="#B2B2B2" />
+                <Icon name={item.isEditing ? 'x' : 'edit'} size={24} color="#B2B2B2" />
               </TouchableOpacity>
 
               <TouchableOpacity
