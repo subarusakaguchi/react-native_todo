@@ -7,21 +7,38 @@ import { TodoInput } from '../components/TodoInput';
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  let removeTaskVerify = false
 
-  const createTwoButtonAlert = () =>
+  const taskAlreadyExistsAlert = () =>
     Alert.alert(
       "Task já cadastrada",
       "Você não pode adicionar uma task com o mesmo título",
       [
         { text: "OK" }
       ]
-    );
+  );
+
+  const removeTaskAlert = (id: number) =>
+    Alert.alert(
+      "Remover Item",
+      "Tem certeza que deseja apagar esta task permanentemente?",
+      [
+        {
+          text: "Cancel"
+        },
+        { text: "Apagar", onPress: () => {
+            removeTaskVerify = true
+            handleRemoveTask(id)
+          }
+        }
+      ]
+  );
 
   function handleAddTask(newTaskTitle: string) {
     const titleAlreadyExists = tasks.find(task => task.title === newTaskTitle);
 
     if (titleAlreadyExists) {
-      createTwoButtonAlert()
+      taskAlreadyExistsAlert()
     } else {
       const newTask:Task = {
         id: new Date().getTime(),
@@ -47,7 +64,12 @@ export function Home() {
   }
 
   function handleRemoveTask(id: number) {
-    setTasks(oldTasks => oldTasks.filter(task => task.id !== id))
+    if (removeTaskVerify) {
+      setTasks(oldTasks => oldTasks.filter(task => task.id !== id))
+      removeTaskVerify = false
+    } else {
+      removeTaskAlert(id)
+    }
   }
 
   function handleEditTask(id: number) {
